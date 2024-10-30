@@ -46,28 +46,33 @@ public class CompensationServiceImplTest {
 
     @Test
     public void testCreateRead() throws ParseException {
+        // Setup mock data
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         UUID employeeId = UUID.randomUUID();
         Date effectiveDate = sdf.parse("2024-11-05");
-        BigDecimal salary = BigDecimal.valueOf(100_000.50);
+        BigDecimal salary = BigDecimal.valueOf(100_000.99);
 
         Compensation compensation = new Compensation(employeeId.toString(), salary, effectiveDate);
 
+        // create a compensation record based on mock data
         Compensation createdCompensation = restTemplate.postForEntity(
                 compensationCreateUrl,
                 compensation,
                 Compensation.class).getBody();
 
+        // assert record created matches the record sent
         assertNotNull(createdCompensation);
         assertCompensationEquivalence(compensation, createdCompensation);
 
+        // read the compensation that was just created
         Compensation readCompensation = restTemplate.getForEntity(
                 compensationReadUrl,
                 Compensation.class,
                 createdCompensation.getEmployeeId()).getBody();
 
+        // assert read record is the same as the created record
         assertNotNull(readCompensation);
         assertCompensationEquivalence(createdCompensation, readCompensation);
     }

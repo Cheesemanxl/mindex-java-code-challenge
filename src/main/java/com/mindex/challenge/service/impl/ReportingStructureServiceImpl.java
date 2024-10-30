@@ -30,12 +30,15 @@ public class ReportingStructureServiceImpl implements ReportingStructureService 
 
 
     private int countDirectReports(List<Employee> directReports) {
+        // if no direct reports return zero
         if (directReports == null) {
             return 0;
         }
 
+        // else return size of direct reports list
         int sumOfReports = directReports.size();
 
+        // recursively count all direct reports under each direct report in the list
         for (Employee report : directReports) {
             report = employeeService.read(report.getEmployeeId());
             sumOfReports += countDirectReports(report.getDirectReports());

@@ -40,6 +40,7 @@ public class ReportingStructureServiceImplTest {
 
     @Test
     public void testRead() {
+        // Setup mock employee tree with a mock request for each employee
         Employee testIC1 = new Employee();
         testIC1.setFirstName("John");
         testIC1.setLastName("Doe");
@@ -99,11 +100,13 @@ public class ReportingStructureServiceImplTest {
 
         testCEO = restTemplate.postForEntity(employeeCreateUrl, testCEO, Employee.class).getBody();
 
+        // get the reporting structure record for the employee at the top of the tree
         ReportingStructure reportingStructure = restTemplate.getForEntity(
                 reportingStructureGetUrl,
                 ReportingStructure.class,
                 testCEO.getEmployeeId()).getBody();
 
+        // assert number of direct reports is calculated correctly
         assertEquals(6, reportingStructure.getNumberOfReports());
     }
 }
