@@ -15,6 +15,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -75,6 +76,14 @@ public class EmployeeServiceImplTest {
                         readEmployee.getEmployeeId()).getBody();
 
         assertEmployeeEquivalence(readEmployee, updatedEmployee);
+    }
+
+    @Test
+    public void testReadWithNonExistingEmployeeId() {
+        String badID = "nonExistentEmployeeId";
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> employeeService.read(badID))
+                .withMessage("Invalid employeeId: " + badID);
     }
 
     private static void assertEmployeeEquivalence(Employee expected, Employee actual) {
